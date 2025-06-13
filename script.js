@@ -73,6 +73,29 @@ class MinMaxList {
     return value;
   }
 
+  remove(value) {
+    let current = this.head;
+    while (current && current.value !== value) {
+      current = current.next;
+    }
+    if (!current) return false;
+    if (current.prev) {
+      current.prev.next = current.next;
+    } else {
+      this.head = current.next;
+    }
+    if (current.next) {
+      current.next.prev = current.prev;
+    } else {
+      this.tail = current.prev;
+    }
+    return true;
+  }
+
+  clear() {
+    this.head = this.tail = null;
+  }
+
   toArray() {
     const arr = [];
     let current = this.head;
@@ -88,13 +111,25 @@ class MinMaxList {
 $(function() {
   const list = new MinMaxList();
 
-  function updateInfo() {
+  function updateDisplay() {
     const arr = list.toArray();
+    const $ul = $('#listDisplay');
+    $ul.empty();
     if (arr.length === 0) {
       $('#listInfo').text('List is empty.');
-    } else {
-      $('#listInfo').html(`List: [${arr.join(', ')}] <br>Min: ${list.getMin()} Max: ${list.getMax()}`);
+      return;
     }
+    arr.forEach(v => {
+      const $li = $('<li class="list-group-item d-flex justify-content-between align-items-center"></li>');
+      $li.append(`<span>${v}</span>`);
+      const $btn = $('<button class="btn btn-sm btn-outline-danger remove-item">Remove</button>');
+      $btn.data('value', v);
+      $li.append($btn);
+      if (v === list.getMin()) $li.addClass('min-item');
+      if (v === list.getMax()) $li.addClass('max-item');
+      $ul.append($li);
+    });
+    $('#listInfo').text(`Min: ${list.getMin()} Max: ${list.getMax()}`);
   }
 
   $('#insertBtn').on('click', function() {
@@ -102,7 +137,7 @@ $(function() {
     if (!isNaN(val)) {
       list.insert(val);
       $('#valueInput').val('');
-      updateInfo();
+      updateDisplay();
     }
   });
 
@@ -110,7 +145,7 @@ $(function() {
     const val = list.extractMin();
     if (val !== null) {
       alert('Extracted min: ' + val);
-      updateInfo();
+      updateDisplay();
     }
   });
 
@@ -118,7 +153,21 @@ $(function() {
     const val = list.extractMax();
     if (val !== null) {
       alert('Extracted max: ' + val);
-      updateInfo();
+      updateDisplay();
     }
   });
+
+  $('#clearBtn').on('click', function() {
+    list.clear();
+    updateDisplay();
+  });
+
+  $('#listDisplay').on('click', '.remove-item', function() {
+    const val = $(this).data('value');
+    list.remove(val);
+    updateDisplay();
+  });
+
+  // initial render
+  updateDisplay();
 });
