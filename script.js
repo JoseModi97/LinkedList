@@ -20,11 +20,13 @@ class MinMaxList {
       this.head = this.tail = newNode;
       return;
     }
+
     // Insert in sorted order
     let current = this.head;
     while (current && current.value < value) {
       current = current.next;
     }
+
     if (!current) { // insert at end
       newNode.prev = this.tail;
       this.tail.next = newNode;
@@ -108,7 +110,7 @@ class MinMaxList {
 }
 
 // UI Logic with jQuery
-$(function() {
+$(function () {
   const list = new MinMaxList();
 
   function updateDisplay() {
@@ -117,11 +119,13 @@ $(function() {
     const $vis = $('#listVisual');
     $ul.empty();
     $vis.empty();
+
     if (arr.length === 0) {
       $('#listInfo').text('List is empty.');
       return;
     }
-    arr.forEach(v => {
+
+    arr.forEach((v) => {
       const $li = $('<li class="list-group-item d-flex justify-content-between align-items-center"></li>');
       $li.append(`<span>${v}</span>`);
       const $btn = $('<button class="btn btn-sm btn-outline-danger remove-item">Remove</button>');
@@ -141,10 +145,11 @@ $(function() {
         $vis.append('<span class="arrow">&rarr;</span>');
       }
     });
+
     $('#listInfo').text(`Min: ${list.getMin()} Max: ${list.getMax()}`);
   }
 
-  $('#insertBtn').on('click', function() {
+  $('#insertBtn').on('click', function () {
     const val = parseInt($('#valueInput').val(), 10);
     if (!isNaN(val)) {
       list.insert(val);
@@ -153,7 +158,7 @@ $(function() {
     }
   });
 
-  $('#extractMinBtn').on('click', function() {
+  $('#extractMinBtn').on('click', function () {
     const val = list.extractMin();
     if (val !== null) {
       alert('Extracted min: ' + val);
@@ -161,7 +166,7 @@ $(function() {
     }
   });
 
-  $('#extractMaxBtn').on('click', function() {
+  $('#extractMaxBtn').on('click', function () {
     const val = list.extractMax();
     if (val !== null) {
       alert('Extracted max: ' + val);
@@ -169,17 +174,17 @@ $(function() {
     }
   });
 
-  $('#clearBtn').on('click', function() {
+  $('#clearBtn').on('click', function () {
     list.clear();
     updateDisplay();
   });
 
-  $('#listDisplay').on('click', '.remove-item', function() {
+  $('#listDisplay').on('click', '.remove-item', function () {
     const val = $(this).data('value');
     list.remove(val);
     updateDisplay();
   });
 
-  // initial render
+  // Initial render
   updateDisplay();
 });
